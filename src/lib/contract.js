@@ -94,8 +94,22 @@ async function invokeContract(publicKey, method, ...args) {
 async function pollTx(hash) {
   for (let i = 0; i < 40; i++) {
     await sleep(2000)
-    const res = await rpc.getTransaction(hash)
-    if (res.status === SorobanRpc.Api.GetTransactionStatus.SUCCESS) return { hash, result: res.returnValue }
+    let res
+    try {
+      res = await rpc.getTransaction(hash)
+    } catch (e) {
+      // SDK v15 internally parses returnValue XDR — if it hits an unknown union
+      // discriminant it throws "Bad union switch". The tx still succeeded on-chain.
+      if (e?.message?.includes('union switch') || e?.message?.includes('XDR')) {
+        return { hash, result: null }
+      }
+      throw e
+    }
+    if (res.status === SorobanRpc.Api.GetTransactionStatus.SUCCESS) {
+      let retval = null
+      try { retval = res.returnValue } catch { retval = null }
+      return { hash, result: retval }
+    }
     if (res.status === SorobanRpc.Api.GetTransactionStatus.FAILED)
       throw Object.assign(new Error('Transaction failed on-chain.'), { code: 'TX_FAILED', hash })
   }

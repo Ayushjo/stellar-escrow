@@ -73,7 +73,7 @@ export default function App() {
     try {
       const { hash, id } = await createEscrow(address, recipient, amount, deadlineTs, title)
       clearTimeout(confirmTimer)
-      setToast({ type: 'success', message: `Escrow #${id} created! ${amount} XLM locked on-chain.`, hash })
+      setToast({ type: 'success', message: `Escrow created! ${amount} XLM locked on-chain.`, hash })
       setTab('sent')
       await loadEscrows(address)
     } catch (err) {
