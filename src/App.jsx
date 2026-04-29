@@ -65,39 +65,57 @@ export default function App() {
 
   async function handleCreate({ recipient, amount, title, deadlineTs }) {
     setCreating(true)
-    setToast({ type: 'pending', message: 'Creating escrow… Sign the transaction in your wallet.' })
+    setToast({ type: 'pending', message: 'Sign the transaction in your wallet…' })
+    const confirmTimer = setTimeout(
+      () => setToast({ type: 'pending', message: 'Confirming on-chain… this usually takes 10–30s.' }),
+      7_000
+    )
     try {
       const { hash, id } = await createEscrow(address, recipient, amount, deadlineTs, title)
+      clearTimeout(confirmTimer)
       setToast({ type: 'success', message: `Escrow #${id} created! ${amount} XLM locked on-chain.`, hash })
       setTab('sent')
       await loadEscrows(address)
     } catch (err) {
+      clearTimeout(confirmTimer)
       setToast({ type: 'error', message: classifyError(err).message })
     } finally { setCreating(false) }
   }
 
   async function handleRelease(id) {
     setActionId(id); setActionType('release')
-    setToast({ type: 'pending', message: 'Releasing funds… Sign in your wallet.' })
+    setToast({ type: 'pending', message: 'Sign the transaction in your wallet…' })
+    const confirmTimer = setTimeout(
+      () => setToast({ type: 'pending', message: 'Confirming on-chain… this usually takes 10–30s.' }),
+      7_000
+    )
     try {
       const hash = await releaseEscrow(address, id)
+      clearTimeout(confirmTimer)
       setToast({ type: 'success', message: 'Funds released to recipient!', hash })
       invalidateEscrowCache(id, address)
       await loadEscrows(address)
     } catch (err) {
+      clearTimeout(confirmTimer)
       setToast({ type: 'error', message: classifyError(err).message })
     } finally { setActionId(null); setActionType(null) }
   }
 
   async function handleRefund(id) {
     setActionId(id); setActionType('refund')
-    setToast({ type: 'pending', message: 'Claiming refund… Sign in your wallet.' })
+    setToast({ type: 'pending', message: 'Sign the transaction in your wallet…' })
+    const confirmTimer = setTimeout(
+      () => setToast({ type: 'pending', message: 'Confirming on-chain… this usually takes 10–30s.' }),
+      7_000
+    )
     try {
       const hash = await refundEscrow(address, id)
+      clearTimeout(confirmTimer)
       setToast({ type: 'success', message: 'Refund claimed successfully!', hash })
       invalidateEscrowCache(id, address)
       await loadEscrows(address)
     } catch (err) {
+      clearTimeout(confirmTimer)
       setToast({ type: 'error', message: classifyError(err).message })
     } finally { setActionId(null); setActionType(null) }
   }
