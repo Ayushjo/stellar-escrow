@@ -11,8 +11,7 @@ A fully on-chain escrow service built with a **Soroban smart contract** on Stell
 
 ## Demo Video
 
-> **[▶ 1-Minute Demo →](https://youtu.be/placeholder)**
-> *(Record with Loom or OBS and add link here)*
+> **[▶ 1-Minute Demo →](https://www.loom.com/share/fdb1ed0d4e66480a90ac5568608439f3)**
 
 ---
 
