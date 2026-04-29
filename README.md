@@ -7,7 +7,6 @@ A fully on-chain escrow service built with a **Soroban smart contract** on Stell
 ## Live Demo
 
 > **[🚀 Live App →](https://stellar-escrow.vercel.app)**
-> *(Deploy to Vercel and update this link)*
 
 ## Demo Video
 
@@ -144,7 +143,7 @@ cargo test --manifest-path contracts/escrow/Cargo.toml
 
 ```bash
 # 1. Clone
-git clone https://github.com/<your-username>/stellar-escrow.git
+git clone https://github.com/Ayushjo/stellar-escrow.git
 cd stellar-escrow
 
 # 2. Install
