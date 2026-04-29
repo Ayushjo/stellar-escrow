@@ -87,7 +87,7 @@ async function invokeContract(publicKey, method, ...args) {
   const submitted = await rpc.sendTransaction(
     TransactionBuilder.fromXDR(signedXdr, NETWORK)
   )
-  if (submitted.status === 'ERROR') throw new Error(submitted.errorResult?.toString() || 'Submission failed')
+  if (submitted.status === 'ERROR') throw new Error('Transaction failed to submit. Please try again.')
   return pollTx(submitted.hash)
 }
 
@@ -159,7 +159,8 @@ export async function createEscrow(publicKey, recipient, xlmAmount, deadlineTs, 
     nativeToScVal(BigInt(deadlineTs), { type: 'u64' }),
     nativeToScVal(title, { type: 'string' }),
   )
-  const newId = result.result ? Number(scValToNative(result.result)) : null
+  let newId = null
+  try { newId = result.result ? Number(scValToNative(result.result)) : null } catch { newId = null }
   invalidateEscrowCache(newId, publicKey)
   return { hash: result.hash, id: newId }
 }
